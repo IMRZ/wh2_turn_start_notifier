@@ -19,6 +19,7 @@ namespace WindowsFormsApp1
             memoryReader = new MemoryReader();
 
             int CURRENT_TURN = memoryReader.getCurrentTurnNumber();
+            this.label1.Text = "current turn number: " + CURRENT_TURN;
 
             MethodInvoker inv = delegate
             {
@@ -26,11 +27,17 @@ namespace WindowsFormsApp1
                 bool isIngameMenuActive = memoryReader.isIngameMenuActive();
                 bool isActive = memoryReader.isWh2ProcessWindowActive();
 
-                if (currentTurnNumber > CURRENT_TURN)
+                // TODO: fix me, detect if game is still in on campaign map
+                memoryReader.resetAddressCurrentTurnNumber();
+
+                if (currentTurnNumber == (CURRENT_TURN + 1))
                 {
                     Debug.WriteLine("[WH2_TURN_START_NOTIFIER] new turn started");
                     CURRENT_TURN = currentTurnNumber;
                     if (!isActive) System.Media.SystemSounds.Beep.Play();
+
+                    // only update label when number is incremented by 1
+                    this.label1.Text = "current turn number: " + currentTurnNumber;
                 }
                 else if (currentTurnNumber == CURRENT_TURN && isIngameMenuActive)
                 {
@@ -38,7 +45,6 @@ namespace WindowsFormsApp1
                     if (!isActive) System.Media.SystemSounds.Asterisk.Play();
                 }
 
-                this.label1.Text = "current turn number: " + currentTurnNumber;
                 this.label2.Text = "player action required: " + isIngameMenuActive;
             };
 
